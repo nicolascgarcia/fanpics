@@ -12,14 +12,23 @@ import Logo from '../../assets/logo.svg'
 import { AddIcon } from '@chakra-ui/icons'
 import { Post } from '../../components'
 import PostModal from './PostModal'
+import DeleteModal from './DeleteModal'
 
 export const Home = () => {
 
   const [postModal, setPostModal] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
+
+  const [selectedPost, setSelectedPost] = useState(null)
+
+  const handleOpenDeleteModal = (id) => {
+    setSelectedPost(id)
+    setDeleteModal(true)
+  }
 
   const posts = [
     {
-      id: '1',
+      _id: '1',
       title: 'Teste 1',
       author: {
         firstName: 'Nicolas',
@@ -29,7 +38,7 @@ export const Home = () => {
       url: 'https://images.unsplash.com/photo-1593642634402-b0eb5e2eebc9?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
     },
     {
-      id: '2',
+      _id: '2',
       title: 'Teste 2',
       author: {
         firstName: 'Nicolas',
@@ -106,7 +115,7 @@ export const Home = () => {
                   description={post.description}
                   url={post.url}
                   openEditModal={() => console.log('abrir modal de edição')}
-                  openDeleteModal={() => console.log('abrir modal de exclusão')}
+                  openDeleteModal={() => handleOpenDeleteModal(post._id)}
                 />
               ))}
             </Flex>
@@ -122,6 +131,14 @@ export const Home = () => {
       <PostModal 
         isOpen={postModal}
         onClose={() => setPostModal(false)}
+      />
+      <DeleteModal
+        isOpen={deleteModal}
+        onClose={() => {
+          setDeleteModal(false)
+          setSelectedPost(null)
+        }}
+        postId={selectedPost}
       />
     </>
   )
