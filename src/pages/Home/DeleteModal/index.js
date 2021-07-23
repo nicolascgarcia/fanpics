@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Modal,
   ModalOverlay,
@@ -8,11 +8,26 @@ import {
   Text,
   Button
 } from '@chakra-ui/react'
+import api from '../../../services/api'
 
 const DeleteModal = (props) => {
 
+  const [loading, setLoading] = useState(false)
+
   const confirmDelete = () => {
-    console.log('apagar', props.postId)
+    setLoading(true)
+
+    api.delete(`/posts/${props.postId}`)
+      .then(() => {
+        props.loadPosts()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        setLoading(false)
+        props.onClose()
+      })
   }
 
   return (
@@ -34,6 +49,7 @@ const DeleteModal = (props) => {
             mr='3'
             width='70%'
             onClick={confirmDelete}
+            isLoading={loading}
           >Excluir</Button>
           <Button
             onClick={props.onClose}

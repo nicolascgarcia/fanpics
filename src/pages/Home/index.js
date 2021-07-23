@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Flex,
   Image,
@@ -6,13 +6,15 @@ import {
   Box,
   Text,
   Divider,
-  Button
+  Button,
+  Spinner
 } from "@chakra-ui/react"
 import Logo from '../../assets/logo.svg'
 import { AddIcon } from '@chakra-ui/icons'
 import { Post } from '../../components'
 import PostModal from './PostModal'
 import DeleteModal from './DeleteModal'
+import api from '../../services/api' 
 
 export const Home = () => {
 
@@ -20,6 +22,25 @@ export const Home = () => {
   const [deleteModal, setDeleteModal] = useState(false)
 
   const [selectedPost, setSelectedPost] = useState(null)
+
+  const [posts, setPosts] = useState([])
+
+  const [loading, setLoading] = useState(false)
+
+  const loadPosts = () => {
+    setLoading(true)
+
+    api.get('/posts')
+      .then(res => {
+        setPosts(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
 
   const handleOpenDeleteModal = (id) => {
     setSelectedPost(id)
@@ -31,28 +52,9 @@ export const Home = () => {
     setPostModal(true)
   }
 
-  const posts = [
-    {
-      _id: '1',
-      title: 'Teste 1',
-      author: {
-        firstName: 'Nicolas',
-        lastName: 'Garcia',
-      },
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce consequat tincidunt orci sit amet hendrerit. Donec a efficitur felis, non semper tellus. Proin vitae elit nec magna sollicitudin commodo ut at leo. Pellentesque scelerisque mi eu elit porttitor hendrerit. ',
-      url: 'https://images.unsplash.com/photo-1593642634402-b0eb5e2eebc9?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-    },
-    {
-      _id: '2',
-      title: 'Teste 2',
-      author: {
-        firstName: 'Nicolas',
-        lastName: 'Garcia',
-      },
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce consequat tincidunt orci sit amet hendrerit. Donec a efficitur felis, non semper tellus. Proin vitae elit nec magna sollicitudin commodo ut at leo. Pellentesque scelerisque mi eu elit porttitor hendrerit. ',
-      url: 'https://images.unsplash.com/photo-1593642634402-b0eb5e2eebc9?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-    }
-  ]
+  useEffect(() => {
+    loadPosts()
+  }, [])
 
   return (
     <>
@@ -108,22 +110,28 @@ export const Home = () => {
             justifyContent='center'
             alignItems='center'
           >
-            <Flex 
+            {loading ? (
+              <Flex justifyContent='center' alignItems='center' height='50vh'>
+                <Spinner color='blue.500'/>
+              </Flex>
+            ) : (
+              <Flex 
               flexDirection='column'
               ml={['0', '4', '4', '4']}
-            >
-              {posts.map(post => (
-                <Post
-                  key={post._id}
-                  title={post.title}
-                  author={`${post.author.firstName} ${post.author.lastName}`}
-                  description={post.description}
-                  url={post.url}
-                  openEditModal={() => handleOpenEditModal(post._id)}
-                  openDeleteModal={() => handleOpenDeleteModal(post._id)}
-                />
-              ))}
-            </Flex>
+              >
+                {posts.map(post => (
+                  <Post
+                    key={post?._id}
+                    title={post?.title}
+                    author={`${post?.author?.firstName} ${post?.author?.lastName}`}
+                    description={post?.description}
+                    url={post?.url}
+                    openEditModal={() => handleOpenEditModal(post?._id)}
+                    openDeleteModal={() => handleOpenDeleteModal(post?._id)}
+                  />
+                ))}
+              </Flex>
+            )}
           </Box>
         </Flex>
         {/* Início do Footer */}
@@ -140,6 +148,7 @@ export const Home = () => {
           setSelectedPost(null)
         }}
         postId={selectedPost}
+        loadPosts={loadPosts}
       />
       <DeleteModal
         isOpen={deleteModal}
@@ -148,6 +157,7 @@ export const Home = () => {
           setSelectedPost(null)
         }}
         postId={selectedPost}
+        loadPosts={loadPosts}
       />
     </>
   )
