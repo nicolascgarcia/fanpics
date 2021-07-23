@@ -1,599 +1,624 @@
-# Day Two - UI Framework
+# Day Three - Forms
 
 ## O que aprenderemos hoje?
 
-- As UI Framework e o Chakra UI
-- Estrutura de pasta
-- Sobre import e export
-- Desenvolvendo o Header, Box de ações e o card de post.
+- Modal de criação de post
+- Modal de exclusão
+- Fazendo alterações de um post
 
-## UI Framework e o Chakra UI
+## Modal de Criação de Post
 
-Uma framework é um pacote de códigos pré-prontos, bastando ao desenvolvedor adaptar àquilo ao seu programa. As UI Frameworks, ou frameworks de Front-End, são pacotes de códigos de componentes prontos para serem utilizados.
+Nesta aula vamos criar alguns modais para realizar ações referentes aos posts, como criação, edição e exclusão. O Chakra UI já possui um componente para construirmos modais eficientes ([clique aqui](https://chakra-ui.com/docs/overlay/modal)). Vamos começar com o modal de criação de um post.
 
-Vamos utilizar o Chakra UI, uma ótima opção de framework para React. Acessando a documentação do Chakra UI ([clique aqui](https://chakra-ui.com/docs/getting-started)) já teremos um tutorial de instalação da framework em nosso projeto.
+Primeiramente criaremos uma pasta para o modal de criação dentro da pasta `Home`, assim isolando todo o código referente a este modal. Crie uma pasta `PostModal` e adicione um `index.js` a este.
 
-Dentro do diretório do projeto, instale o Chakra UI com o seguinte comando:
+![Untitled](https://user-images.githubusercontent.com/60199944/126249034-2edf4776-13e9-4d44-b604-ee1a341ac93c.png)
 
-```bash
-yarn add @chakra-ui/react @emotion/react@^11 @emotion/styled@^11 framer-motion@^4
-```
-
-Agora temos que adicionar o ChakraProvider na raiz de nossa aplicação, podemos adicionar no `app.js`:
-
-```jsx
-import { ChakraProvider } from '@chakra-ui/react'
-
-const App = () => {
-  return (
-    <ChakraProvider>
-      {...}
-    </ChakraProvider>
-  )
-}
-
-export default App
-```
-
-Agora o Chakra UI está configurado e pronto para ser utilizado em nosso projeto.
-
-## Estrutura de Pasta
-
-A estrutura de pasta do seu projeto é muito importante para termos uma boa organização e facilitar a navegação dentro do projeto. O importante não é termos a melhor estrutura do mundo, mas sim seguirmos um padrão em todos os projetos. 
-
-Utilizaremos a estrutura de pastas abaixo. Tudo que desenvolveremos ficará na pasta `src`, isolado dos outros arquivos e pastas que são gerados pelo próprio React.
-
-![Untitled](https://user-images.githubusercontent.com/60199944/126218524-b8850f37-24a7-4808-8f96-7b3d588d8bd5.png)
-
-Ao desenvolver uma página, sempre crio uma pasta com o nome da página e o seu conteúdo no `index.js` da pasta. Por que faço assim? Pois podemos organizar melhor o nosso código da página, isolando elementos que são usados nesta página. 
-
-Veja este exemplo abaixo. Na página `Home` eu tenho dois modais, um para criar posts e outro para deletar. Ao invés de eu deixar o código deles dentro do `index.js`, eu isolei eles em pastas separadas dentro da pasta Home, assim tenho uma organização melhor e todo o conteúdo de cada modal, está isolado em sua própria pasta. 
-
-![Untitled 1](https://user-images.githubusercontent.com/60199944/126218536-ec17d4d8-3524-4b2b-a271-896de569c7a2.png)
-
-Assim como a primeira imagem, vamos criar as pastas assets, components, pages e services. Utilizaremos estas pastas ao decorrer das aulas.
-
-Em `assets` já adicionei a imagem para carregamento de foto e a logo de nosso projeto. Ambas então em `src/assets` desta branch.
-
-![Untitled 2](https://user-images.githubusercontent.com/60199944/126218549-78747500-0174-4cd5-aaa6-525e4b4dfe73.png)
-
-Na pasta `components` armazenaremos os componentes de nosso projeto. Por enquanto manteremos apenas com um arquivo `index.js` vazio. A pasta `services` armazena configurações de serviços utilizados por nossa aplicação, como é a conexão com API que utilizaremos.
-
-A pasta `pages` armazena todas as páginas de nossa aplicação. Vamos iniciar criando uma página chamada `Home`, onde será a única página de nosso projeto. Crie uma pasta `Home` dentro de pages e adicione um `index.js` com o seguinte código:
+Em `src/pages/Home/PostModal/index.js`, adicione o seguinte código:
 
 ```jsx
 import React from 'react'
-import { Text } from '@chakra-ui/react'
-
-export const Home = () => {
-  return (
-    <Text>Página Home</Text>
-  )
-}
-```
-
-Em `pages/index.js` vamos exportar a nova página `Home`.
-
-```jsx
-import { Home } from './Home'
-
-export { Home }
-```
-
-Agora temos a nossa página `Home` com um texto e já está sendo exportada pela pasta `pages`. Vamos alterar o `src/App.js` para utilizarmos a nossa página `Home`.  
-
-```jsx
-import React from 'react'
-import { ChakraProvider } from '@chakra-ui/react'
-import { Home } from './pages'
-
-const App = () => {
-  return (
-    <ChakraProvider>
-      <Home/>
-    </ChakraProvider>
-  )
-}
-
-export default App
-```
-
-Dentro do terminal e no diretório do projeto, execute o comando `yarn start` para inicar a aplicação e verá a tela com o texto **Página Home**.
-
- Neste ponto já podemos excluir os arquivos `index.css` e `App.css` da pasta src e remover o import do `index.css` em `index.js`.
-
-## Sobre import e export
-
-A ECMAScript criou o conceito de módulos na ES6. Um módulo é uma unidade independente de código, auto contida, normalmente um arquivo de código. Um módulo pode disponibilizar seus conteúdos para outros módulos usando a diretiva `export`. Pode também consumir conteúdos de outros módulos usando a diretiva `import`. Em React usamos essas diretivas para passar conteúdos de um componente para outro.
-
-Vamos analisar o código abaixo de um arquivo `App.js`.
-
-```jsx
-export default App
-```
-
-Aqui estamos exportando os conteúdos de `App` para outros módulos que importarem este arquivo. Note que está sendo utilizado a palavra-chave `default`, um dos tipos de exports na ES6 o qual informa que está sendo exportado todos os conteúdos do módulo.
-
-Agora vamos utilizar este módulo em algum outro arquivo. Como o módulo está exportando tudo de `App`, pois está utilizando o `export default`, devemos nomear os conteúdos a serem importando:
-
-```jsx
-import App from './App'
-```
-
-Essa é a sintaxe para importarmos o `export default` de um módulo. Já que em `App.js` está exportando tudo de `App`, devemos atribuir um nome ao conteúdo de `App` para utilizar no módulo onde ocorre a importação.
-
-Ou seja, você não especificou um conteúdo de `.App` então eu vou mandar os conteúdo exportado por default e nomeá-lo com o propósito de criar uma referência para ele.  
-
-E se desejarmos exportar separadamente diferentes conteúdos de um módulo? Há dois métodos para fazer isso:
-
-```jsx
-import React from 'react'
-import { Text } from '@chakra-ui/react'
-
-export const Home = () => {
-  return (
-    <Text>Página Home</Text>
-  )
-}
-```
-
-```jsx
-import React from 'react'
-import { Text } from '@chakra-ui/react'
-
-const Home = () => {
-  return (
-    <Text>Página Home</Text>
-  )
-}
-
-export { Home }
-```
-
-Podemos atribuir o `export` antes da declaração do que desejamos exportar ou podemos exporar no final do arquivo, utilizando o `export` e um objeto contendo o que desejamos exportar. Neste caso podemos ter mais de um `export` em um módulo.
-
-Para utilizar um ou mais conteúdos de um módulo com `export`, utilizamos a senguinte sintaxe:
-
-```jsx
-import { Home } from './pages'
-```
-
-Utilizamos a funcionalidade de destructuring para dizermos que queremos importar tais conteúdos de um módulo. Por termos especificamente o que está sendo exportado, não podemos nomeá-los.
-
-## Desenvolvendo o Header, Box de ações e o card de post
-
-Vamos começar desenvolvendo o header da nossa aplicação. No header utilizaremos um icone do Chakra UI, para isso devemos instalar a lib do Chakra UI para ícones ([clique aqui](https://chakra-ui.com/docs/media-and-icons/icon)). Instale com o seguinte comando:
-
-```bash
-yarn add @chakra-ui/icons
-```
-
- Em `src/pages/Home/index.js` vamos adicionar o seguinte código:
-
-```jsx
-import React from 'react'
-import {
-  Flex,
-  IconButton,
-  Image
-} from '@chakra-ui/react'
-import { AddIcon } from '@chakra-ui/icons'
-import Logo from '../../assets/logo.svg'
-
-export const Home = () => {
-  return (
-    <Flex
-      flexDirection='column'
-      justifyContent='space-between'
-      minHeight='100vh'
-      bg='#E5E5E5'
-      paddingX={['5%', '15%', '15%', '15%']}
-    >
-      <Flex
-        bg='#FFF'
-        borderBottomRadius='20px'
-        justifyContent='space-between'
-        alignItems='center'
-        paddingY={[2]}
-      >
-        <Image src={Logo} alt='Fanpics Logo' marginX={[4]}/>
-        <IconButton
-          icon={<AddIcon/>}
-          variant='ghost'
-          marginX={[4]}
-          aria-label='Novo post'
-          onClick={() => console.log('abrir modal')}
-        />
-      </Flex>
-    </Flex>
-  )
-}
-```
-
-O primeiro bloco de `<Flex>` será para posicionarmos todo o conteúdo da página. Note que os componentes do Chakra UI aceitam props de CSS. Isso é resultado do uso da lib [Styled System](https://styled-system.com/), uma lib muito interessante para atribuirmos CSS com facilidade nos componentes. Depois atribuimos outro `<Flex>` com a logo e um botão com ícone para abrirmos um modal de criação de post.
-
-Outro fator interesante do Styled System é a forma de lidarmos com responsividade. Ao adicionarmos um array com os valores da prop, cada item do array serve para um breakpoint (tamanho de tela) diferente, seguindo a ordem `[sm, md, lg, xl]`.
-
-Agora vamos desenvolver o box de ações e já adicionaremos o rodapé. Abaixo do `<Flex>` do header, vamos adicionaremos o código do box de ações, num arquivo com o seguinte código:
-
- 
-
-```jsx
-import React from 'react'
-import {
-  Flex,
-  IconButton,
-  Image,
-  Box,
-  Text,
-  Divider,
-  Button
-} from '@chakra-ui/react'
-import { AddIcon } from '@chakra-ui/icons'
-import Logo from '../../assets/logo.svg'
-
-export const Home = () => {
-  return (
-    <Flex
-      flexDirection='column'
-      justifyContent='space-between'
-      minHeight='100vh'
-      bg='#E5E5E5'
-      paddingX={['5%', '15%', '15%', '15%']}
-    >
-      {/* Início do Header */}
-      <Flex
-        bg='#FFF'
-        borderBottomRadius='20px'
-        justifyContent='space-between'
-        alignItems='center'
-        paddingY={[2]}
-      >
-        <Image src={Logo} alt='Fanpics Logo' marginX={[4]}/>
-        <IconButton
-          icon={<AddIcon/>}
-          variant='ghost'
-          marginX={[4]}
-          aria-label='Novo post'
-          onClick={() => console.log('abrir modal')}
-        />
-      </Flex>
-      {/* Início do Box de Ações */}
-      <Flex
-        flexDirection='row'
-        flexWrap='wrap'
-        minHeight='85vh'
-      >
-        <Box width={['100%', 1/4, 1/4, 1/4]}>
-          <Flex
-            borderRadius='20px'
-            flexDirection='column'
-            justifyContent='center'
-            alignItems='center'
-            bg='#FFF'
-            paddingY={[3]}
-            marginY={[3]}
-          >
-            <Text fontSize='20px'>Ações</Text>
-            <Divider marginY={[2]} />
-            <Button
-              rightIcon={<AddIcon/>}
-              width='90%'
-              onClick={() => console.log('abrir modal')}
-            >
-              Novo Post
-            </Button>
-          </Flex>
-        </Box>
-      </Flex>
-      {/* Início do Footer */}
-      <Box marginY={[4]}>
-        <Text
-          textAlign='center'
-          fontSize='15px'
-          color='gray'
-        >
-          Copyright © 2021 Feito com ❤ por Kazap Tecnologia - Todos os direitos reservados
-        </Text>
-      </Box>
-    </Flex>
-  )
-}
-```
-
-Primeiramente adicionamos um `<Flex>` para conter todo conteúdo do meio da página, que terá o box de ações e os posts. Dentro adicionamos outro `<Flex>` com props CSS transformando em uma caixa com borda contendo um botão para adicionarmos um novo post.
-
-O Footer é apenar um `<Box>` com o texto de copyright centralizado ao fim da página.
-
-Para finalizar o dia, vamos desenvolver o card de post do nosso projeto. Para isso, vamos criar uma pasta para este card na pasta `components`. Crie a pasta para o componente `Post`:
-
-![Untitled 3](https://user-images.githubusercontent.com/60199944/126218570-27b5dd00-632e-4bf8-afa6-2bb092b37b1a.png)
-
-Dentro do `index.js` de `Post`, vamos adicionar o seguinte código:
-
-```jsx
-import React from 'react'
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import {
   Button,
-  Image,
-  Flex,
-  Box,
-  Text
+  ModalBody,
+  ModalFooter,
+  Modal,
+  ModalContent,
+  ModalOverlay,
+  ModalHeader,
+  ModalCloseButton
 } from '@chakra-ui/react'
-import ImageNotFound from '../../assets/image-not-found.jpg'
 
-const Post = ({
-  title = '',
-  author = '',
-  url = '',
-  description = '',
-  postId = '',
-  openDeleteModal,
-  openEditModal
+const PostModal = ({
+  isOpen,
+  onClose
 }) => {
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      isCentered
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader textAlign='center'>Novo Post</ModalHeader>
+        <ModalCloseButton />
+          <ModalBody pb={6}>
+               
+
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              width='70%'
+              type='submit'
+            >
+              Criar Post
+            </Button>
+            <Button onClick={onClose} width='30%'>
+              Fechar
+            </Button>
+          </ModalFooter>
+      </ModalContent>
+    </Modal>
+  )
+}
+
+export default PostModal
+```
+
+Aqui criamos um componente chamado `PostModal`, onde usamos o componente modal de acordo com a documentação do Chakra UI. Este componente Modal espera duas props, `isOpen` e `onClose`, para controlar se o modal está aberto ou fechado. Portanto, quando utilizarmos este componente na página `Home`, teremos que criar um estado para o seu controle com valor booleano, `true` ou `false`. Como o componente `<Modal>` espera essas propriedades, também solicitamos essas mesmas props no `PostModal` e atribuímos em `<Modal>`.
+
+Vamos adicionar esse novo componente `PostModal` em nossa `Home`. Vamos importar o `PostModal` da seguinte forma:
+
+```jsx
+import PostModal from './PostModal'
+```
+
+Vamos precisar de um estado para controlar se o modal será exibido (true) ou está fechado (false). Vamos importar o `useState` de react adicionando o destructuring no import existente:
+
+```jsx
+import React, { useState } from 'react'
+```
+
+Dentro do componente `Home`, criaremos a constante do estado para controlarmos o modal de criação:
+
+```jsx
+const [postModal, setPostModal] = useState(false)
+```
+
+Por padrão o seu valor será `false`, significando que o modal está fechado. Quando alteramos o seu valor para `true`, o Modal será aberto. Vamos adicionar o Modal em nosso JSX ao final do código existente, passando o estado `postModal` como valor de `isOpen` e uma função para fechar o modal em `onClose`:
+
+```jsx
+<PostModal
+  isOpen={postModal}
+  onClose={() => setPostModal(false)}
+/>
+```
+
+Lembra que temos dois botões para abrir o modal de criação? Um no header e outro no box de ações. Vamos adicionar uma função para abrir este modal na prop `onClick` destes botões:
+
+```jsx
+onClick={() => setPostModal(true)}
+```
+
+Agora teste clicando em um dos botões para abrirmos o modal! O arquivo `src/pasges/Home/index.js` ficará da seguinte forma:
+
+```jsx
+import React, { useState } from 'react'
+{...demais imports}
+import PostModal from './PostModal'
+
+export const Home = () => {
+  const [postModal, setPostModal] = useState(false)
+
+  const posts = [
+    {...conteúdos de posts}
+  ]
 
   return (
     <>
       <Flex
-        key={postId}
-        flexWrap='wrap'
-        bg='#FFF'
-        borderRadius='20px'
-        mb={[3]}
-        mt={[0, 0, 3, 3]}
-        boxShadow={'rgb(0, 0, 0, 0.3) 10px 10px 30px 1px'}
+        flexDirection='column'
+        justifyContent='space-between'
+        minHeight='100vh'
+        bg='#E5E5E5'
+        paddingX={['5%', '15%', '15%', '15%']}
       >
+        {/* Início do Header */}
         <Flex
-          flexDirection='column'
+          bg='#FFF'
+          borderBottomRadius='20px'
           justifyContent='space-between'
-          width={['100%', '100%', '100%', 3/10]}
-          paddingY={[5]}
-          paddingX={[3]}
+          alignItems='center'
+          paddingY={[2]}
         >
-          <Box>
-            <Text fontSize='xl'><b>Título</b></Text>
-            <Text fontSize='sm' isTruncated>{title}</Text>
-          </Box>
-          <Box>
-            <Text fontSize='xl'><b>Autor</b></Text>
-            <Text fontSize='sm' isTruncated>{author}</Text>
-          </Box>
-          <Box>
-            <Text fontSize='xl'><b>Descrição</b></Text>
-            <Text fontSize='sm' noOfLines={4}>
-              {description}
-            </Text>
-          </Box>
-          <Flex flexWrap='wrap' justifyContent='center'>
-            <Button
-              rightIcon={<EditIcon/>}
-              variant='ghost'
-              onClick={() => openEditModal(postId)}
-            >
-              Editar
-            </Button>
-            <Button
-              rightIcon={<DeleteIcon/>}
-              colorScheme='red'
-              variant='ghost'
-              onClick={() => openDeleteModal(postId)}
-            >
-              Excluir
-            </Button>
-          </Flex> 
+          <Image src={Logo} alt='Fanpics Logo' marginX={[4]}/>
+          <IconButton
+            icon={<AddIcon/>}
+            variant='ghost'
+            marginX={[4]}
+            aria-label='Novo post'
+            onClick={() => setPostModal(true)}
+          />
         </Flex>
-        <Image
-          src={url}
-          fallbackSrc={ImageNotFound}
-          alt='Imagem tal'
-          width={['100%', '100%', '100%', 7/10]}
-          height='35vh'
-          objectFit='cover'
-          borderTopRightRadius={['0', '0px', '0px', '20px']}
-          borderBottomLeftRadius={['20px', '20px', '20px', '0px']}
-          borderBottomRightRadius={['20px']}
-        />
+        {/* Início do Box de Ações */}
+        <Flex
+          flexDirection='row'
+          flexWrap='wrap'
+          minHeight='85vh'
+        >
+          <Box width={['100%', 1/4, 1/4, 1/4]}>
+            <Flex
+              borderRadius='20px'
+              flexDirection='column'
+              justifyContent='center'
+              alignItems='center'
+              bg='#FFF'
+              paddingY={[3]}
+              marginY={[3]}
+            >
+              <Text fontSize='20px'>Ações</Text>
+              <Divider marginY={[2]} />
+              <Button
+                rightIcon={<AddIcon/>}
+                width='90%'
+                onClick={() => setPostModal(true)}
+              >
+                Novo Post
+              </Button>
+            </Flex>
+          </Box>
+          {/* Início dos Posts */}
+          <Box
+            width={['100%', 3/4, 3/4, 3/4]}
+            minHeight='85vh'
+            justifyContent='center'
+            alignItems='center'
+          >
+            <Flex flexDirection='column' ml={[0, 4, 4, 4]}>
+              {posts.map(post => (
+                <Post
+                  key={post._id}
+                  title={post.title}
+                  author={`${post.author.firstName} ${post.author.lastName}`}
+                  description={post.description}
+                  postId={post._id}
+                  url={post.url}
+                  openDeleteModal={() => console.log('deletar')}
+                  openEditModal={() => console.log('editar')}
+                />
+              ))}
+            </Flex>
+          </Box>
+        </Flex>
+        {/* Início do Footer */}
+        <Box marginY={[4]}>
+          <Text
+            textAlign='center'
+            fontSize='15px'
+            color='gray'
+          >
+            Copyright © 2021 Feito com ❤ por Kazap Tecnologia - Todos os direitos reservados
+          </Text>
+        </Box>
       </Flex>
+      <PostModal
+        isOpen={postModal}
+        onClose={() => setPostModal(false)}
+      />
     </>
   )
 }
-
-export default Post
 ```
 
-Dentro do `index.js` da pasta `components`, vamos exportar o componente `Post`:
+Temos o nosso modal funcionando, agora vamos adicionar o formulário deste modal para podermos criar um post. Primeiramente vamos envolver o componente `<ModalBody>` e `<ModalFooter>` em um `<form>`, passando a prop `onSubmit` com a função `handleSubmit` que será criada posteriormente.
 
 ```jsx
-import Post from './Post'
-
-export { Post }
+<form onSubmit={handleSubmit}>
+	<ModalBody pb={6}>
+               
+	</ModalBody>
+	<ModalFooter>
+		{...}
+	</ModalFooter>
+</form>
 ```
 
-Com o nosso componente de `Post` criado, vamos utilizarmos na página `Home`. Vamos criar um array de objetos com dados aleatórios para testarmos enquanto não integramos com a API. 
+Em react, cada campo do formulário precisa controlar o seu valor com um estado que armazenará o seu valor. Senda assim, vamos criar um estado para cada campo para o formulário. No `index.js` do `PostModal`, importe o `useState` de react.
 
 ```jsx
-const posts = [
-    {
-      id: '1',
-      title: 'Teste 1',
-      author: {
-        firstName: 'Nicolas',
-        lastName: 'Garcia',
-      },
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce consequat tincidunt orci sit amet hendrerit. Donec a efficitur felis, non semper tellus. Proin vitae elit nec magna sollicitudin commodo ut at leo. Pellentesque scelerisque mi eu elit porttitor hendrerit. ',
-      url: 'https://images.unsplash.com/photo-1593642634402-b0eb5e2eebc9?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-    },
-    {
-      id: '2',
-      title: 'Teste 2',
-      author: {
-        firstName: 'Nicolas',
-        lastName: 'Garcia',
-      },
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce consequat tincidunt orci sit amet hendrerit. Donec a efficitur felis, non semper tellus. Proin vitae elit nec magna sollicitudin commodo ut at leo. Pellentesque scelerisque mi eu elit porttitor hendrerit. ',
-      url: 'https://images.unsplash.com/photo-1593642634402-b0eb5e2eebc9?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-    },
-  ]
+import React, { useState } from 'react'
 ```
 
-Em nosso JSX, vamos adicionar uma função de JavaScript para listar todos os itens de um array, o `.map`. Criaremos um `<Box>` para conter a lista de posts e percorreremos o array de posts com o `.map` retornando o componente post para cada objeto contido na constante `posts`. Por fim, nosso arquivo `Home` ficará assim:
+Dentro do componente, adicione os estados para cada campo:
+
+```jsx
+const [title, setTitle] = useState('')
+const [authorId, setAuthorId] = useState('')
+const [description, setDescription] = useState('')
+const [url, setUrl] = useState('')
+```
+
+Temos todos os estados para nossos campos. Vamos importar todos componentes do Chakra UI que usaremos no formulário, adicionando ao import existente:
+
+```jsx
+import {
+  Button,
+  ModalBody,
+  ModalFooter,
+  Modal,
+  ModalContent,
+  ModalOverlay,
+  ModalHeader,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  Select,
+  Input,
+  Textarea
+} from '@chakra-ui/react'
+```
+
+Vamos adicionar os campos de nosso formulário, dentro do `<form>` do JSX de `PostModal`:
+
+```jsx
+{...}
+<form onSubmit={handleSubmit}>
+  <ModalBody pb={6}>
+    <FormControl>
+      <FormLabel>Autor</FormLabel>
+      <Select
+        placeholder="Selecione o autor"
+        id='author'
+        name='author'
+        value={authorId}
+        onChange={(e) => setAuthorId(e.target.value)}
+        isRequired
+      >
+        <option key={'1'} value={'1'}>
+          Nicolas Garcia
+        </option>
+      </Select>
+    </FormControl>
+    <FormControl mt={4}>
+      <FormLabel>Nome da Imagem</FormLabel>
+      <Input
+        placeholder="Nome descritivo da imagem"
+        id='title'
+        name='title'
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        isRequired
+      />
+    </FormControl>
+    <FormControl mt={4}>
+      <FormLabel>Url da Imagem</FormLabel>
+      <Input
+        placeholder="Link da sua imagem"
+        id='url'
+        name='url'
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        isRequired
+      />
+    </FormControl>
+    <FormControl mt={4}>
+      <FormLabel>Descrição da Imagem</FormLabel>
+      <Textarea
+        placeholder="Descrição"
+        id='description'
+        name='description'
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+    </FormControl>
+  </ModalBody>
+  <ModalFooter>
+    <Button
+      colorScheme="blue"
+      mr={3}
+      width='70%'
+      type='submit'
+    >
+      Criar Post
+    </Button>
+    <Button onClick={onClose} width='30%'>
+      Fechar
+    </Button>
+  </ModalFooter>
+</form>
+{...}
+```
+
+Por fim, temos que criar a função `handleSubmit`, a função para tratar todos os valores que foi enviado pelo formulário da forma que desejarmos. Por agora vamos apenas adicionar todos os campos em um `console.log` para visualizarmos o funcionamento.
+
+Abaixo dos estados criados, adicione a seguinte função:
+
+```jsx
+const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log({
+      title,
+      authorId,
+      description,
+      url
+    })
+  }
+```
+
+Agora clique em algum botão para abrir o modal, preencha os campos e envie para visualizar o log de todos os dados do formulário!
+
+## Modal de exclusão
+
+O modal de exclusão será mais fácil, pois terá apenas dois botões para confirmar a exclusão do post. Então vamos começar de forma semelhante ao `PostModal`, vamos criar a pasta `DeleteModal` dentro da pasta `Home`.
+
+![Untitled 1](https://user-images.githubusercontent.com/60199944/126249069-cbd7dd60-41af-4654-bec5-f29fb1b1c71e.png)
+
+Em `src/pages/Home/DeleteModal/index.js`, adicione o seguinte código:
 
 ```jsx
 import React from 'react'
 import {
-  Flex,
-  IconButton,
-  Image,
-  Box,
+  Button,
+  ModalBody,
   Text,
-  Divider,
-  Button
+  ModalFooter,
+  Modal,
+  ModalContent,
+  ModalOverlay
 } from '@chakra-ui/react'
-import { AddIcon } from '@chakra-ui/icons'
-import Logo from '../../assets/logo.svg'
-import { Post } from '../../components'
 
-export const Home = () => {
-
-  const posts = [
-    {
-      id: '1',
-      title: 'Teste 1',
-      author: {
-        firstName: 'Nicolas',
-        lastName: 'Garcia',
-      },
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce consequat tincidunt orci sit amet hendrerit. Donec a efficitur felis, non semper tellus. Proin vitae elit nec magna sollicitudin commodo ut at leo. Pellentesque scelerisque mi eu elit porttitor hendrerit. ',
-      url: 'https://images.unsplash.com/photo-1593642634402-b0eb5e2eebc9?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-    },
-    {
-      id: '2',
-      title: 'Teste 2',
-      author: {
-        firstName: 'Nicolas',
-        lastName: 'Garcia',
-      },
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce consequat tincidunt orci sit amet hendrerit. Donec a efficitur felis, non semper tellus. Proin vitae elit nec magna sollicitudin commodo ut at leo. Pellentesque scelerisque mi eu elit porttitor hendrerit. ',
-      url: 'https://images.unsplash.com/photo-1593642634402-b0eb5e2eebc9?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-    },
-  ]
+const DeleteModal = ({
+  isOpen,
+  onClose,
+}) => {
+  const confirmDelete = () => {
+    console.log('apagado')
+  }
 
   return (
-    <Flex
-      flexDirection='column'
-      justifyContent='space-between'
-      minHeight='100vh'
-      bg='#E5E5E5'
-      paddingX={['5%', '15%', '15%', '15%']}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      isCentered
     >
-      {/* Início do Header */}
-      <Flex
-        bg='#FFF'
-        borderBottomRadius='20px'
-        justifyContent='space-between'
-        alignItems='center'
-        paddingY={[2]}
-      >
-        <Image src={Logo} alt='Fanpics Logo' marginX={[4]}/>
-        <IconButton
-          icon={<AddIcon/>}
-          variant='ghost'
-          marginX={[4]}
-          aria-label='Novo post'
-          onClick={() => console.log('abrir modal')}
-        />
-      </Flex>
-      {/* Início do Box de Ações */}
-      <Flex
-        flexDirection='row'
-        flexWrap='wrap'
-        minHeight='85vh'
-      >
-        <Box width={['100%', 1/4, 1/4, 1/4]}>
-          <Flex
-            borderRadius='20px'
-            flexDirection='column'
-            justifyContent='center'
-            alignItems='center'
-            bg='#FFF'
-            paddingY={[3]}
-            marginY={[3]}
+      <ModalOverlay />
+      <ModalContent>
+        <ModalBody pb={6}>
+          <Text textAlign='center' fontSize='30px'>
+            <b>Deseja realmente excluir este post</b>
+          </Text>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            colorScheme="red"
+            mr={3}
+            width='70%'
+            onClick={confirmDelete}
           >
-            <Text fontSize='20px'>Ações</Text>
-            <Divider marginY={[2]} />
-            <Button
-              rightIcon={<AddIcon/>}
-              width='90%'
-              onClick={() => console.log('abrir modal')}
-            >
-              Novo Post
-            </Button>
-          </Flex>
-        </Box>
-        {/* Início dos Posts */}
-        <Box
-          width={['100%', 3/4, 3/4, 3/4]}
-          minHeight='85vh'
-          justifyContent='center'
-          alignItems='center'
-        >
-          <Flex flexDirection='column' ml={[0, 4, 4, 4]}>
-            {posts.map(post => (
-              <Post
-                key={post._id}
-                title={post.title}
-                author={`${post.author.firstName} ${post.author.lastName}`}
-                description={post.description}
-                postId={post._id}
-                url={post.url}
-                openDeleteModal={() => console.log('deletar')}
-                openEditModal={() => console.log('editar')}
-              />
-            ))}
-          </Flex>
-        </Box>
-      </Flex>
-      {/* Início do Footer */}
-      <Box marginY={[4]}>
-        <Text
-          textAlign='center'
-          fontSize='15px'
-          color='gray'
-        >
-          Copyright © 2021 Feito com ❤ por Kazap Tecnologia - Todos os direitos reservados
-        </Text>
-      </Box>
-    </Flex>
+            Deletar
+          </Button>
+          <Button onClick={onClose} width='30%'>
+            Fechar
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   )
+}
+
+export default DeleteModal
+```
+
+O `DeleteModal` também espera duas props, `isOpen` e `onClose`, para passar seus valores para o componente `<Modal>`, igual ao `PostModal`. Temos também um botão deletar, onde temos uma função no `onClick` para executar a axclusão. Por enquanto a função `confirmDelete` apenas exibe um `console.log` para confirmar o seu funcionamento.
+
+Vamos adicionar este modal em nossa `Home`:
+
+```jsx
+import DeleteModal from './DeleteModal'
+```
+
+Dentro do componente `Home`, criaremos a constante do estado para controlarmos o modal de exclusão:
+
+```jsx
+const [deleteModal, setDeleteModal] = useState(false)
+```
+
+Vamos adicionar o `DeleteModal` em nosso JSX abaixo do `PostModal`, passando o estado e uma função para fechar o modal de exclusão:
+
+```jsx
+<DeleteModal
+	isOpen={deleteModal}
+  onClose={() => setDeleteModal(false)}
+/>
+```
+
+Ainda na `Home`, lembra do componente `Post` que colocamos? Ele está passando a prop `openDeleteModal`, onde agora poderemos adicionar uma função para abrir o modal de exclusão.
+
+```jsx
+{posts.map(post => (
+  <Post
+    key={post._id}
+    title={post.title}
+    author={`${post.author.firstName} ${post.author.lastName}`}
+    description={post.description}
+    postId={post._id}
+    url={post.url}
+    openDeleteModal={() => setDeleteModal(true)}
+    openEditModal={() => console.log('editar')}
+  />
+))}
+```
+
+Por fim podemos fazer um teste clicando em qualquer botão de excluir e teremos o modal em funcionamento. Mas temos um detalhe faltando, o modal precisa saber qual será o post a ser excluído. Precisamos salvar o ID do post que clicamos em um estado e passar este para o componente DeleteModal. No `index.js` de `Home` vamos adicionar um estado chamado `selectedPost`:
+
+```jsx
+const [selectedPost, setSelectedPost] = useState(null)
+```
+
+Vamos criar uma função que abra o modal de exclusão e adicione o ID do post clicado ao valor de `selectedPost`. Abaixo dos estados, adicione a função `handleOpenDeleteModal` e adicione esta na prop `openDeleteModal` passando o ID como parâmetro:
+
+```jsx
+const handleOpenDeleteModal = (id) => {
+    setSelectedPost(id)
+    setDeleteModal(true)
+  }
+```
+
+```jsx
+{posts.map(post => (
+  <Post
+    key={post._id}
+    title={post.title}
+    author={`${post.author.firstName} ${post.author.lastName}`}
+    description={post.description}
+    postId={post._id}
+    url={post.url}
+    openDeleteModal={() => handleOpenDeleteModal(post._id)}
+    openEditModal={() => console.log('editar')}
+  />
+))}
+```
+
+Agora devemos passar qual o post selecionado para o `DeleteModal` com a prop `postId`. Vamos também adicionar o `setSelectedPost(null)` na prop `onClose` para sempre que o modal fechar, limpará o estado `selectedPost` já que nenhum post estará selecionado.
+
+```jsx
+<DeleteModal
+  isOpen={deleteModal}
+  onClose={() => {
+     setDeleteModal(false)
+     setSelectedPost(null)
+  }}
+	postId={selectedPost}
+/>
+```
+
+No `index.js` da pasta `DeleteModal` vamos adicionar a nova prop `postId` e adicionar no `console.log` para vermos em funcionamento.
+
+```jsx
+const DeleteModal = ({
+  isOpen,
+  onClose,
+  postId
+}) => {
+  const confirmDelete = () => {
+    console.log('apagar', postId)
+  }
+
+{...}
+```
+
+Ao tentar apagar um post, verá no console do DevTools o log mostrando o ID do post selecionado. Assim temos o modal de exclusão funcionando corretamente!
+
+## Fazendo Alterações de um Post
+
+Para atualizarmos um post será necessário abrir um modal igual ao de criação de post, porém com os dados do post selecionado já preenchido nos campos. Assim podemos alterar o que queremos e atualizar o post selecionado. Mas não precisamos criar um novo modal para isso, pois visualmente seria idêntico ao de criação de post. Portando vamos aproveitar o `PostModal` para realizar atualizações quando ter algum post selecionado.
+
+Para identificarmos quando será uma atualização, ao clicarmos em **Editar** deverá abrir o `PostModal` e atribuir o ID do post selecionado em `selectedPost`, igual ao modal de exclusão, passando esse estado para o `PostModal` com a prop `postId`. A lógica do `PostModal` funcionará na seguinte forma:
+
+- Tem um post selecionado (`postId === true`): Será uma atualização.
+- Não tem post selecionado (`postId === false`): Será um novo post.
+
+No `index.js` da `Home` vamos adicionar a seguinte função abaixo da função `handleOpenDeleteModal`:
+
+```jsx
+const handleOpenEditModal = (id) => {
+  setSelectedPost(id)
+  setPostModal(true)
 }
 ```
 
-Perfeito! Já temos uma ótima estrutura da nossa aplicação. Na próxima aula vamos criar os modais com formulários para criar, editar e excluir um post.
-
-## Bônus
-
-Vamos deixar o nosso componente `Post` mais interessante? Vamos adicionar uma estilização para se destacar ao passar o mouse acima. Vamos utilizar uma lib chamada [Styled Components](https://styled-components.com/). Esta lib nos permite criar componentes que sejam elementos HTML estilizados com CSS ou estilizar outro componente existente. Vamos utilizar esta lib para podermos adicionar uma estilização ao acontecer um hover em nosso componente. 
-
-Instale a lib com o comando:
-
-```bash
-yarn add styled-components
-```
-
-Vamos importar a lib nova e criar um componente chamado Wrapper, o qual é o componente `<Flex>` estilizado, dentro do arquivo de `Post`.
+Vamos adicionar esta nova função na prop `openEditModal` do componente `<Post>` da `Home`:
 
 ```jsx
-import styled from 'styled-components'
-
-const Wrapper = styled(Flex)`
-  transition: transform .5s;
-  &:hover {
-    -ms-transform: scale(1.1); /* IE 9 */
-    -webkit-transform: scale(1.1); /* Safari 3-8 */
-    transform: scale(1.1); 
-  }
-`
+{posts.map(post => (
+  <Post
+    key={post._id}
+    title={post.title}
+    author={`${post.author.firstName} ${post.author.lastName}`}
+    description={post.description}
+    postId={post._id}
+    url={post.url}
+    openDeleteModal={() => handleOpenDeleteModal(post._id)}
+    openEditModal={() => handleOpenEditModal(post._id)}
+  />
+))}
 ```
 
-Agora, substitua o primeiro `<Flex>` do componente por este novo `<Wrapper>` e veja o que acontece ao passar o mouse pelos posts!
+Assim como foi feito com o `DeleteModal` devemos passar qual o post selecionado para o `PostModal` com a prop `postId`. Vamos também adicionar o `setSelectedPost(null)` na prop `onCLose` para sempre que o modal fechar, limpará o estado `selectedPost` como já fizemos anteriormente.
+
+```jsx
+<PostModal
+  isOpen={postModal}
+  onClose={() => {
+  setPostModal(false)
+  setSelectedPost(null)
+  }}
+  postId={selectedPost}
+/>
+```
+
+Recapitulando, ao clicarmos em **Editar** o `PostModal` será aberto e o ID do post selecionado será atribuido ao estado `selectedPost`, o qual é passado seu valor para o `PostModal` através da prop `postId`.
+
+Vamos ao `index.js` do `PostModal` para adaptá-lo para poder realizar atualizações ao receber o `postId`. Adicione o `postId` como uma prop a ser recebida e altere a função `handleSubmit` para sabermos quando será uma atualização ou criação de um post a partir de uma condicional (if/else) com o `postId`.
+
+```jsx
+const PostModal = ({
+  isOpen,
+  onClose,
+  postId
+}) => {
+  const [title, setTitle] = useState('')
+  const [authorId, setAuthorId] = useState('')
+  const [description, setDescription] = useState('')
+  const [url, setUrl] = useState('')
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    if (postId) {
+      console.log('Atualizando', postId)
+      console.log({
+        title,
+        authorId,
+        description,
+        url
+      })
+    } else {
+      console.log('Criando', {
+        title,
+        authorId,
+        description,
+        url
+      })
+    }
+  }
+```
+
+ 
+
+Também devemos alterar alguns textos no JSX do `PostModal` para quando for uma atualização. Como sabemos que quando recebemos o `postId` é uma atualização, utilizaremos uma condicional no JSX. Comece alterando o `<ModalHeader>`:
+
+```jsx
+<ModalHeader textAlign='center'>
+	{postId ? 'Editar Post' : 'Novo Post'}
+</ModalHeader>
+```
+
+Agora atualize o texto do botão no `<ModalFooter>`:
+
+```jsx
+<Button
+  colorScheme="blue"
+  mr={3}
+  width='70%'
+  type='submit'
+>
+  {postId ? 'Atualizar post' : 'Criar post'}
+</Button>
+```
+
+Pronto! Agora o `PostModal` tem a funcionalidade de criar e editar um post. Faça um teste e veja os textos e os logs sendo alterados de acordo com o seu uso na aplicação.
