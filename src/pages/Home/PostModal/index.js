@@ -25,12 +25,22 @@ const PostModal = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    console.log({
-      authorId,
-      title,
-      url,
-      description
-    })
+    if (props.postId) {
+      console.log('Atualizando', props.postId)
+      console.log({
+        authorId,
+        title,
+        url,
+        description
+      })
+    } else {
+      console.log('Criando', {
+        authorId,
+        title,
+        url,
+        description
+      })
+    }
   }
 
   return (
@@ -41,7 +51,9 @@ const PostModal = (props) => {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader textAlign='center' >Novo Post</ModalHeader>
+        <ModalHeader textAlign='center' >
+          {props.postId ? 'Editar Post' : 'Novo Post'}
+        </ModalHeader>
         <ModalCloseButton/>
         <form onSubmit={handleSubmit}>
           <ModalBody>
@@ -96,7 +108,9 @@ const PostModal = (props) => {
               width='70%'
               marginRight='3'
               type='submit'
-            >Criar Post</Button>
+            >
+              {props.postId ? 'Editar Post' : 'Novo Post'}
+            </Button>
             <Button
               onClick={props.onClose}
               width='30%'

@@ -26,6 +26,11 @@ export const Home = () => {
     setDeleteModal(true)
   }
 
+  const handleOpenEditModal = (id) => {
+    setSelectedPost(id)
+    setPostModal(true)
+  }
+
   const posts = [
     {
       _id: '1',
@@ -114,7 +119,7 @@ export const Home = () => {
                   author={`${post.author.firstName} ${post.author.lastName}`}
                   description={post.description}
                   url={post.url}
-                  openEditModal={() => console.log('abrir modal de edição')}
+                  openEditModal={() => handleOpenEditModal(post._id)}
                   openDeleteModal={() => handleOpenDeleteModal(post._id)}
                 />
               ))}
@@ -130,7 +135,11 @@ export const Home = () => {
       </Flex>
       <PostModal 
         isOpen={postModal}
-        onClose={() => setPostModal(false)}
+        onClose={() => {
+          setPostModal(false)
+          setSelectedPost(null)
+        }}
+        postId={selectedPost}
       />
       <DeleteModal
         isOpen={deleteModal}
